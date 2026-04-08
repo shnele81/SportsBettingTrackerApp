@@ -2,7 +2,27 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Track Your Bets!</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Sports Betting Tracker</h1>
+        <p class="lead mb-4">Take control of your sports betting. Track every wager, analyze your performance, and make smarter decisions.</p>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="Wagers" asp-action="Create" class="btn btn-success btn-lg me-3">
+                + Add New Wager
+            </a>
+            <a asp-controller="Wagers" asp-action="Index" class="btn btn-outline-light btn-lg">
+                View My Wagers
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Register" class="btn btn-success btn-lg me-3">
+                Get Started Free
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">
+                Sign In
+            </a>
+        }
+    </div>
 </div>
