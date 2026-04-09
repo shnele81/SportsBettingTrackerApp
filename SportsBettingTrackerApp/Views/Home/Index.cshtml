@@ -1,10 +1,11 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
+<!-- Hero Section -->
 <div class="hero-section">
     <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-3">Sports Betting Tracker</h1>
+        <h1 class="display-4 fw-bold mb-3">Sports Wager Tracker</h1>
         <p class="lead mb-4">Take control of your sports betting. Track every wager, analyze your performance, and make smarter decisions.</p>
         @if (User.Identity?.IsAuthenticated == true)
         {
@@ -26,3 +27,85 @@
         }
     </div>
 </div>
+
+<!-- Features Section -->
+<div class="features-section">
+    <div class="row text-center mb-5">
+        <div class="col-12">
+            <h2 class="fw-bold">Everything you need to track your bets</h2>
+            <p class="fw-bold">Built for serious bettors who want data-driven insights.</p>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="display-5 mb-3">📊</div>
+                    <h5 class="card-title fw-bold">Detailed Tracking</h5>
+                    <p class="card-text text-muted">Log every wager with amount, sport, type, odds, and outcome. Never lose track of a bet again.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="display-5 mb-3">📈</div>
+                    <h5 class="card-title fw-bold">Performance Stats</h5>
+                    <p class="card-text text-muted">See your win rate, profit/loss, total wagered, and more at a glance with live aggregate stats.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="display-5 mb-3">🔍</div>
+                    <h5 class="card-title fw-bold">Smart Filters</h5>
+                    <p class="card-text text-muted">Filter your wager history by specific date, month, or year to analyze trends over time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="display-5 mb-3">🏈</div>
+                    <h5 class="card-title fw-bold">All Major Sports</h5>
+                    <p class="card-text text-muted">NFL, NBA, MLB, NHL, Soccer, Tennis, Boxing, MMA &mdash; track bets across every sport you follow.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="display-5 mb-3">🎯</div>
+                    <h5 class="card-title fw-bold">All Wager Types</h5>
+                    <p class="card-text text-muted">Moneyline, Spread, Over/Under, Parlay, Prop bets &mdash; every type of wager is supported.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="display-5 mb-3">🔒</div>
+                    <h5 class="card-title fw-bold">Private & Secure</h5>
+                    <p class="card-text text-muted">Your data is private to your account. Secure authentication keeps your betting history safe.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (User.Identity?.IsAuthenticated != true)
+{ <div class="bottom-section">
+    <div class="container text-center">
+        <h3 class="fw-bold mb-3">Ready to start tracking?</h3>
+        <p class="text-muted mb-4">Create your free account and add your first wager in minutes.</p>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-success btn-lg">
+            Create Free Account</a>
+    </div>
+</div>
+
+}

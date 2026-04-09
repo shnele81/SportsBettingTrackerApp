@@ -1,3 +1,4 @@
+
 html {
   font-size: 14px;
 }
@@ -30,6 +31,44 @@ body {
   text-align: start;
 }
 
+/* Index design */
 .hero-section{
-    background-color: #258cfb;
+    background-color: coral;
+    border-style: solid;
+    border-color: black;
+    border-width: thick;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    
 }
+.hero-section h1{
+    font-style: italic;
+    color: white;
+}
+.hero-section p{
+    color: white;
+    font-weight: bold;
+}
+.hero-section a{
+    color: black;
+    background-color: white;
+}
+
+.features-section{
+    background-color: greenyellow;
+    background-image: url('images/sports-tools.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 25px;
+}
+.bottom-section{
+    background-color: coral;
+    padding: 25px;
+    border-style: solid;
+    border-color: black;
+    border-width: thick;
+}
+
