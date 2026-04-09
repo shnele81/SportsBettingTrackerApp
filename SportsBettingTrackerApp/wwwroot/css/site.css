@@ -64,11 +64,20 @@ body {
     background-repeat: no-repeat;
     padding: 25px;
 }
+.features-section h2{
+    color: white;
+}
 .bottom-section{
     background-color: coral;
     padding: 25px;
     border-style: solid;
     border-color: black;
     border-width: thick;
+}
+.bottom-section h3{
+    color: white;
+}
+.bottom-section p{
+    color: white;
 }
 
