@@ -1,7 +1,21 @@
+using System.Data;
+using MySql.Data.MySqlClient;
+using SportsBettingTrackerApp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IDbConnection>((s) =>
+{
+    IDbConnection conn = new MySqlConnection(builder.Configuration.GetConnectionString("sportsbettingtracker"));
+    conn.Open();
+    return conn;
+});
+
+builder.Services.AddTransient<IUserLoginInformationRepository, UserLoginInformationRepository>();
+
 
 var app = builder.Build();
 

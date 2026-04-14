@@ -10,4 +10,9 @@
       <Folder Include="wwwroot\Images\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.1.72" />
+      <PackageReference Include="MySql.Data" Version="9.6.0" />
+    </ItemGroup>
+
 </Project>
