@@ -2,17 +2,17 @@
 
 public class UserModel
 {
-    public int user_id { get; set; }
-    public string username { get; set; }
-    public string email { get; set; }
-    public string password_hash { get; set; }
+    public int UserId { get; set; }
+    public string Username { get; set; }
+    public string Email { get; set; }
+    public string PasswordHash { get; set; }
 
     public UserModel(string username, string email, string passwordHash)
     {
-        this.username = username;
-        this.email = email;
-        this.password_hash = passwordHash;
+        Username = username;
+        Email = email;
+        PasswordHash = passwordHash;
     }
-
     private UserModel() { }
+
 }

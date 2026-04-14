@@ -21,7 +21,7 @@ public class UserLoginInformationRepository : IUserLoginInformationRepository
     public void InsertUser(UserModel user)
     {
         _connection.Execute(
-                "INSERT INTO UserLoginInformation (username, email, password_hash) VALUES (@username, @email, @passwordHash)",
-                new { username = user.username, email = user.email, passwordHash = user.password_hash });
+                "INSERT INTO UserLoginInformation (username, email, passwordHash) VALUES (@username, @email, @passwordHash)",
+                new { username = user.Username, email = user.Email, passwordHash = user.PasswordHash });
     }
 }
