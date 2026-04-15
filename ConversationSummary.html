@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportsBettingTrackerApp - Session Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 40px;
+            color: #222;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        h2 {
+            background-color: #f0f0f0;
+            padding: 6px 12px;
+            border-left: 4px solid #555;
+            margin-top: 30px;
+        }
+        h3 {
+            margin-bottom: 4px;
+            color: #333;
+        }
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        ul {
+            margin-top: 4px;
+        }
+        .note {
+            background-color: #fffbe6;
+            border-left: 4px solid #f0c040;
+            padding: 8px 12px;
+            margin: 10px 0;
+        }
+        .date {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        @media print {
+            body { margin: 20px; }
+            pre { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>SportsBettingTrackerApp - Dev Session Summary</h1>
+<p class="date">Date: April 14, 2026</p>
+
+<h2>1. Project Location</h2>
+<p>The correct solution is located at:</p>
+<pre>C:\Users\andy1\OneDrive\Desktop\repos\SportsBettingTrackerApp\SportsBettingTrackerApp</pre>
+
+<h2>2. Models Created</h2>
+
+<h3>UserModel.cs</h3>
+<p>Represents the database entity matching the <code>UserLoginInformation</code> MySQL table. Uses a custom constructor (valid for EF/Dapper entities) and a private parameterless constructor for database materialization.</p>
+<pre>namespace SportsBettingTrackerApp.Models;
+
+public class UserModel
+{
+    public int user_id { get; set; }
+    public string username { get; set; }
+    public string email { get; set; }
+    public string password_hash { get; set; }
+
+    public UserModel(string username, string email, string passwordHash)
+    {
+        this.username = username;
+        this.email = email;
+        this.password_hash = passwordHash;
+    }
+
+    private UserModel() { }
+}</pre>
+
+<h3>LoginViewModel.cs</h3>
+<p>Used by ASP.NET model binding to receive login form data. Custom constructors should NOT be used on ViewModels as the model binder requires a parameterless constructor.</p>
+<pre>namespace SportsBettingTrackerApp.Models;
+
+public class LoginViewModel
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+}</pre>
+
+<h3>RegisterViewModel.cs</h3>
+<p>Used by ASP.NET model binding for the sign up form.</p>
+<pre>namespace SportsBettingTrackerApp.Models;
+
+public class RegisterViewModel
+{
+    public string Email { get; set; }
+    public string UserName { get; set; }
+    public string Password { get; set; }
+}</pre>
+
+<h2>3. Key Concepts Discussed</h2>
+
+<h3>Why string.Empty / required / nullable?</h3>
+<p>With <code>&lt;Nullable&gt;enable&lt;/Nullable&gt;</code> in the .csproj, the compiler warns when non-nullable strings are uninitialized. Three options:</p>
+<ul>
+    <li><code>= string.Empty</code> — gives a default value</li>
+    <li><code>string? Property</code> — marks it explicitly nullable</li>
+    <li><code>required string Property</code> — C# 11 keyword, must be set at construction (no using needed)</li>
+</ul>
+
+<h3>Custom Constructors — When to Use</h3>
+<ul>
+    <li><strong>Database entities (UserModel)</strong> — custom constructor is fine. Add a <code>private UserModel() {}</code> for EF/Dapper to materialize objects from the DB.</li>
+    <li><strong>ViewModels (LoginViewModel, RegisterViewModel)</strong> — do NOT use custom constructors. ASP.NET's model binder needs a parameterless constructor to bind form data.</li>
+</ul>
+
+<h3>PasswordHash vs Password</h3>
+<p>Passwords are never stored in plain text. They are run through a hashing algorithm (e.g. BCrypt) and the result is stored. On login, the entered password is hashed and compared to the stored hash.</p>
+<pre>// On register
+string hash = BCrypt.Net.BCrypt.HashPassword(plainTextPassword);
+
+// On login
+bool valid = BCrypt.Net.BCrypt.Verify(plainTextPassword, storedHash);</pre>
+
+<h3>Dapper vs EF Core</h3>
+<ul>
+    <li><strong>Dapper</strong> — lightweight, you write raw SQL. No migrations or DbContext needed. Used in this project.</li>
+    <li><strong>EF Core</strong> — heavier, generates SQL for you. Requires DbContext, DbSet, and migrations.</li>
+</ul>
+<p>This project uses Dapper + MySql.Data, matching the pattern from <code>MVCIntroWebsite</code>.</p>
+
+<h2>4. Database</h2>
+<p>MySQL table created manually:</p>
+<pre>CREATE TABLE UserLoginInformation (
+  user_id        INT AUTO_INCREMENT PRIMARY KEY,
+  username       VARCHAR(50)  NOT NULL UNIQUE,
+  email          VARCHAR(100) NOT NULL UNIQUE,
+  password_hash  VARCHAR(255) NOT NULL
+);</pre>
+<div class="note">Note: <code>created_at</code> and <code>last_login</code> columns were dropped after creation.</div>
+
+<h3>Connection String Fix</h3>
+<p>The original connection string had a syntax error. Corrected version in <code>appsettings.json</code>:</p>
+<pre>"sportsbettingtracker": "Server=localhost;Database=sportsbettingtracker;Uid=aoneil01;Pwd=Forgo7Mush.;Port=3306;"</pre>
+
+<h2>5. Data Layer</h2>
+
+<h3>IUserLoginInformationRepository.cs</h3>
+<pre>using SportsBettingTrackerApp.Models;
+
+namespace SportsBettingTrackerApp.Data;
+
+public interface IUserLoginInformationRepository
+{
+    UserModel GetUserByEmail(string email);
+    void InsertUser(UserModel user);
+}</pre>
+
+<h3>UserLoginInformationRepository.cs</h3>
+<pre>using System.Data;
+using Dapper;
+using SportsBettingTrackerApp.Models;
+
+namespace SportsBettingTrackerApp.Data;
+
+public class UserLoginInformationRepository : IUserLoginInformationRepository
+{
+    private readonly IDbConnection _connection;
+
+    public UserLoginInformationRepository(IDbConnection connection)
+    {
+        _connection = connection;
+    }
+
+    public UserModel GetUserByEmail(string email)
+    {
+        return _connection.QuerySingleOrDefault&lt;UserModel&gt;(
+            "SELECT * FROM UserLoginInformation WHERE email = @email",
+            new { email });
+    }
+
+    public void InsertUser(UserModel user)
+    {
+        _connection.Execute(
+            "INSERT INTO UserLoginInformation (username, email, password_hash) VALUES (@username, @email, @passwordHash)",
+            new { username = user.username, email = user.email, passwordHash = user.password_hash });
+    }
+}</pre>
+
+<h2>6. Program.cs</h2>
+<pre>using System.Data;
+using MySql.Data.MySqlClient;
+using SportsBettingTrackerApp.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped&lt;IDbConnection&gt;((s) =>
+{
+    IDbConnection conn = new MySqlConnection(builder.Configuration.GetConnectionString("sportsbettingtracker"));
+    conn.Open();
+    return conn;
+});
+
+builder.Services.AddTransient&lt;IUserLoginInformationRepository, UserLoginInformationRepository&gt;();</pre>
+
+<h2>7. .csproj Packages</h2>
+<pre>&lt;ItemGroup&gt;
+  &lt;PackageReference Include="Dapper" Version="2.1.72" /&gt;
+  &lt;PackageReference Include="MySql.Data" Version="9.6.0" /&gt;
+&lt;/ItemGroup&gt;</pre>
+<div class="note">Note: <code>MySQL.Data.Entities</code> was an incorrect/outdated package and was replaced with <code>MySql.Data</code>.</div>
+
+<h2>8. Next Steps</h2>
+<ul>
+    <li>Add <code>[HttpGet]</code> and <code>[HttpPost]</code> actions to <code>AccountController</code> for Login and SignUp</li>
+    <li>Inject <code>IUserLoginInformationRepository</code> into <code>AccountController</code></li>
+    <li>Implement registration logic: hash the password, call <code>InsertUser</code></li>
+    <li>Implement login logic: call <code>GetUserByEmail</code>, verify password hash</li>
+    <li>Add <code>[Required]</code> data annotations to ViewModels for form validation</li>
+</ul>
+
+</body>
+</html>

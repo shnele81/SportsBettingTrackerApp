@@ -4,6 +4,6 @@ namespace SportsBettingTrackerApp.Data;
 
 public interface IUserLoginInformationRepository
 {
-    UserModel GetUserByEmail(string email);
+    UserModel? GetUserByEmail(string email);
     void InsertUser(UserModel user);
 }

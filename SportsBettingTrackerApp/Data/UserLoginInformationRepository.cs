@@ -13,7 +13,7 @@ public class UserLoginInformationRepository : IUserLoginInformationRepository
         _connection = connection;
     }
 
-    public UserModel GetUserByEmail(string email)
+    public UserModel? GetUserByEmail(string email)
     {
         return _connection.QuerySingleOrDefault<UserModel>("SELECT * FROM UserLoginInformation WHERE email = @email", new { email });
     }

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportsBettingTrackerApp - Session Summary 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 40px;
+            color: #222;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        h2 {
+            background-color: #f0f0f0;
+            padding: 6px 12px;
+            border-left: 4px solid #555;
+            margin-top: 30px;
+        }
+        h3 {
+            margin-bottom: 4px;
+            color: #333;
+        }
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        ul {
+            margin-top: 4px;
+        }
+        .note {
+            background-color: #fffbe6;
+            border-left: 4px solid #f0c040;
+            padding: 8px 12px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #f0fff0;
+            border-left: 4px solid #40c040;
+            padding: 8px 12px;
+            margin: 10px 0;
+        }
+        .date {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        @media print {
+            body { margin: 20px; }
+            pre { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>SportsBettingTrackerApp - Dev Session Summary 2</h1>
+<p class="date">Date: April 14, 2026</p>
+
+<h2>1. Dapper vs EF Core</h2>
+<p>The project uses <strong>Dapper</strong>, matching the pattern from <code>MVCIntroWebsite</code>. This means:</p>
+<ul>
+    <li>Raw SQL queries are written manually</li>
+    <li>No migrations or DbContext needed</li>
+    <li>Database tables are managed directly in MySQL</li>
+    <li>Packages required: <code>Dapper</code> and <code>MySql.Data</code></li>
+</ul>
+
+<h2>2. MySQL Table</h2>
+<p>Table created directly in MySQL:</p>
+<pre>CREATE TABLE UserLoginInformation (
+  user_id    INT AUTO_INCREMENT PRIMARY KEY,
+  username   VARCHAR(50)  NOT NULL UNIQUE,
+  email      VARCHAR(100) NOT NULL UNIQUE,
+  passwordHash VARCHAR(255) NOT NULL
+);</pre>
+<div class="note">Note: <code>created_at</code> and <code>last_login</code> columns were dropped. <code>password_hash</code> was renamed to <code>passwordHash</code> to match C# property names.</div>
+
+<h2>3. Updated UserModel.cs</h2>
+<p>Updated to match the MySQL table with PascalCase properties. The private parameterless constructor is required for Dapper to materialize objects when reading from the database.</p>
+<pre>namespace SportsBettingTrackerApp.Models;
+
+public class UserModel
+{
+    public int UserId { get; set; }
+    public string Username { get; set; }
+    public string Email { get; set; }
+    public string PasswordHash { get; set; }
+
+    public UserModel(string username, string email, string passwordHash)
+    {
+        Username = username;
+        Email = email;
+        PasswordHash = passwordHash;
+    }
+
+    private UserModel() { }
+}</pre>
+
+<h2>4. ViewModels</h2>
+<p>ViewModels must NOT have custom constructors — ASP.NET's model binder needs a parameterless constructor to bind form data. The binder creates the object first, then sets each property individually.</p>
+
+<h3>LoginViewModel.cs</h3>
+<pre>namespace SportsBettingTrackerApp.Models;
+
+public class LoginViewModel
+{
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+}</pre>
+
+<h3>RegisterViewModel.cs</h3>
+<pre>namespace SportsBettingTrackerApp.Models;
+
+public class RegisterViewModel
+{
+    public string Email { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+}</pre>
+
+<h2>5. Data Layer</h2>
+
+<h3>IUserLoginInformationRepository.cs</h3>
+<pre>using SportsBettingTrackerApp.Models;
+
+namespace SportsBettingTrackerApp.Data;
+
+public interface IUserLoginInformationRepository
+{
+    UserModel GetUserByEmail(string email);
+    void InsertUser(UserModel user);
+}</pre>
+
+<h3>UserLoginInformationRepository.cs</h3>
+<pre>using System.Data;
+using Dapper;
+using SportsBettingTrackerApp.Models;
+
+namespace SportsBettingTrackerApp.Data;
+
+public class UserLoginInformationRepository : IUserLoginInformationRepository
+{
+    private readonly IDbConnection _connection;
+
+    public UserLoginInformationRepository(IDbConnection connection)
+    {
+        _connection = connection;
+    }
+
+    public UserModel GetUserByEmail(string email)
+    {
+        return _connection.QuerySingleOrDefault&lt;UserModel&gt;(
+            "SELECT * FROM UserLoginInformation WHERE email = @email",
+            new { email });
+    }
+
+    public void InsertUser(UserModel user)
+    {
+        _connection.Execute(
+            "INSERT INTO UserLoginInformation (username, email, passwordHash) VALUES (@username, @email, @passwordHash)",
+            new { username = user.Username, email = user.Email, passwordHash = user.PasswordHash });
+    }
+}</pre>
+
+<h2>6. Program.cs</h2>
+<pre>using System.Data;
+using MySql.Data.MySqlClient;
+using SportsBettingTrackerApp.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped&lt;IDbConnection&gt;((s) =>
+{
+    IDbConnection conn = new MySqlConnection(builder.Configuration.GetConnectionString("sportsbettingtracker"));
+    conn.Open();
+    return conn;
+});
+
+builder.Services.AddTransient&lt;IUserLoginInformationRepository, UserLoginInformationRepository&gt;();</pre>
+
+<h2>7. appsettings.json Connection String Fix</h2>
+<p>The original connection string had a syntax error (<code>aoneil01=</code>). Corrected version:</p>
+<pre>"sportsbettingtracker": "Server=localhost;Database=sportsbettingtracker;Uid=aoneil01;Pwd=Forgo7Mush.;Port=3306;"</pre>
+
+<h2>8. .csproj Packages</h2>
+<pre>&lt;ItemGroup&gt;
+  &lt;PackageReference Include="BCrypt.Net-Next" Version="4.1.0" /&gt;
+  &lt;PackageReference Include="Dapper" Version="2.1.72" /&gt;
+  &lt;PackageReference Include="MySql.Data" Version="9.6.0" /&gt;
+&lt;/ItemGroup&gt;</pre>
+
+<h2>9. AccountController.cs</h2>
+<p>Key concepts:</p>
+<ul>
+    <li><strong>Dependency injection</strong> — the repository is injected via the constructor so the controller can access the database</li>
+    <li><strong>[HttpGet]</strong> — explicitly marks actions as GET requests (optional but recommended when paired with POST actions)</li>
+    <li><strong>BCrypt</strong> — used to hash passwords on register and verify them on login</li>
+    <li><strong>QuerySingleOrDefault</strong> — returns null if no user is found rather than throwing an exception</li>
+</ul>
+<pre>using Microsoft.AspNetCore.Mvc;
+using SportsBettingTrackerApp.Data;
+using SportsBettingTrackerApp.Models;
+
+namespace SportsBettingTrackerApp.Controllers;
+
+public class AccountController : Controller
+{
+    private readonly IUserLoginInformationRepository _userRepository;
+
+    public AccountController(IUserLoginInformationRepository userRepository)
+    {
+        _userRepository = userRepository;
+    }
+
+    [HttpGet]
+    public IActionResult Login() => View();
+
+    [HttpPost]
+    public IActionResult Login(LoginViewModel model)
+    {
+        var user = _userRepository.GetUserByEmail(model.Email);
+        if (user == null)
+            return View(model);
+
+        bool isValidPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash);
+        if (!isValidPassword)
+            return View(model);
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
+    public IActionResult SignUp() => View();
+
+    [HttpPost]
+    public IActionResult SignUp(RegisterViewModel model)
+    {
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+        var user = new UserModel(model.UserName, model.Email, passwordHash);
+        _userRepository.InsertUser(user);
+        return RedirectToAction("Login");
+    }
+}</pre>
+
+<h2>10. Key Concepts Covered</h2>
+
+<h3>Dependency Injection</h3>
+<p>A way of giving an object what it needs to do its job, rather than having it create those things itself. ASP.NET reads the constructor, sees what's needed, and automatically provides it based on what's registered in <code>Program.cs</code>.</p>
+<ul>
+    <li>Controller depends on the repository</li>
+    <li>Repository depends on the database connection</li>
+    <li>Both are registered in <code>Program.cs</code> and provided automatically</li>
+</ul>
+
+<h3>Why ViewModels Can't Have Custom Constructors</h3>
+<p>ASP.NET's model binder creates the object using a parameterless constructor, then sets each property from the form fields. If only a custom constructor exists, the binder throws an error. Database entities (like <code>UserModel</code>) are different — Dapper handles them and can work with custom constructors as long as a private parameterless constructor is also present.</p>
+
+<h3>BCrypt Password Hashing</h3>
+<pre>// On register — hash the plain text password
+string hash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+
+// On login — verify plain text against stored hash
+bool isValid = BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash);</pre>
+
+<h2>11. Errors Encountered and Fixed</h2>
+<ul>
+    <li><strong>MySqlException: Access denied for user 'aoneil01='</strong> — malformed connection string, fixed by adding <code>Uid=</code> prefix</li>
+    <li><strong>InvalidOperationException: parameterless constructor required for LoginViewModel</strong> — removed custom constructor from ViewModels</li>
+    <li><strong>InvalidOperationException: parameterless constructor required for UserModel materialization</strong> — added <code>private UserModel() {}</code> back to UserModel</li>
+</ul>
+
+<div class="success">
+    <strong>Result:</strong> App is fully functional — users can register, passwords are hashed and stored in MySQL, and login verification works correctly.
+</div>
+
+</body>
+</html>
