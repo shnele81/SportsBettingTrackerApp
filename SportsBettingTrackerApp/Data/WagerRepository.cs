@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Dapper;
 using SportsBettingTrackerApp.Models;
 
 namespace SportsBettingTrackerApp.Data;
@@ -14,7 +15,8 @@ public class WagerRepository : IWagerRepository
 
     public void InsertWager(WagerModel wagerToInsert)
     {
-        throw new NotImplementedException();
+        _connection.Execute("INSERT INTO wagertracker (WagerAmount, AmountReturned, WagerType, WagerSport, WagerDate, WagerResult) " +
+                            "VALUES (@WagerAmount, @AmountReturned, @WagerType, @WagerSport, @WagerDate, @WagerResult)", wagerToInsert);
     }
 
     public void UpdateWager(WagerModel wagerToUpdate)
@@ -29,6 +31,12 @@ public class WagerRepository : IWagerRepository
 
     public IEnumerable<WagerModel> GetWagersByFilter(string? sport, string? wagerType, DateTime? date)
     {
-        throw new NotImplementedException();
+        string sql = "SELECT * FROM Wagers WHERE 1=1";
+
+        if (sport != null) sql += " AND WagerSport = @sport";
+        if (wagerType != null) sql += " AND WagerType = @wagerType";
+        if (date != null) sql += " AND WagerDate = @date";
+
+        return _connection.Query<WagerModel>(sql, new { sport, wagerType, date });
     }
 }
