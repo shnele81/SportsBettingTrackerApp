@@ -8,5 +8,6 @@ public interface IWagerRepository
     void UpdateWager(WagerModel wagerToUpdate);
     void DeleteWager(int WagerId);
     IEnumerable<WagerModel> GetWagersByFilter(string? sport, string? wagerType, DateTime? date);
+    WagerModel GetWagerById(int WagerId);
     
 }

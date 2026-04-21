@@ -41,4 +41,9 @@ public class WagerRepository : IWagerRepository
 
         return _connection.Query<WagerModel>(sql, new { sport, wagerType, date });
     }
+
+    public WagerModel GetWagerById(int WagerId)
+    {
+       return _connection.QuerySingle<WagerModel>("SELECT * FROM wagerTracker WHERE WagerId = @WagerId", new {WagerId});
+    }
 }

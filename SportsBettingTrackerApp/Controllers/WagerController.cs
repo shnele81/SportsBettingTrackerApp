@@ -33,9 +33,10 @@ public class WagerController : Controller
     }
 
     [HttpGet]
-    public IActionResult UpdateWager()
+    public IActionResult UpdateWager(int WagerId )
     {
-        return View();
+        var wager = _wagerRepository.GetWagerById(WagerId);
+        return View(wager);
     }
 
     [HttpPost]
