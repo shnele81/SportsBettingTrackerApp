@@ -1,18 +1,39 @@
-﻿@model TModel
+﻿@model IEnumerable<SportsBettingTrackerApp.Models.WagerModel>
 
 @{
-    Layout = null;
+    ViewData["Title"] = "All Bets";
 }
 
-<!DOCTYPE html>
+<a asp-action="InsertWager" class="btn btn-primary">Add New Wager</a>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
-</div>
-</body>
-</html>
+<table class="table">
+    <tr>
+        <th>WagerSport</th>
+        <th>WagerDate</th>
+        <th>WagerType</th>
+        <th>WagerAmount</th>
+        <th>WagerResult</th>
+        <th>AmountReturned</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+
+    @foreach (var wager in Model)
+    {
+        <tr>
+            <td>@wager.WagerSport</td>
+            <td>@wager.WagerDate</td>
+            <td>@wager.WagerType</td>
+            <td>@wager.WagerAmount</td>
+            <td>@wager.WagerResult</td>
+            <td>@wager.AmountReturned</td>
+            <td>
+                <a asp-action="UpdateWager" asp-route-WagerId="@wager.WagerId">Edit</a>
+            </td>
+            <td>
+                <a asp-action="DeleteWager" asp-route-WagerId="@wager.WagerId">Delete</a>
+            </td>
+        </tr>
+    }
+
+</table>
