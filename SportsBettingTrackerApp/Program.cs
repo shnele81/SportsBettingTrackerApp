@@ -15,7 +15,7 @@ builder.Services.AddScoped<IDbConnection>((s) =>
 });
 
 builder.Services.AddTransient<IUserLoginInformationRepository, UserLoginInformationRepository>();
-
+builder.Services.AddTransient<IWagerRepository, WagerRepository>();
 
 var app = builder.Build();
 
