@@ -12,20 +12,20 @@ public class WagerRepository : IWagerRepository
     {
         _connection = connection;
     }
-
+    
     public void InsertWager(WagerModel wagerToInsert)
     {
         _connection.Execute("INSERT INTO wagerTracker (WagerAmount, AmountReturned, WagerType, WagerSport, WagerDate, WagerResult, UserId) " +
                             "VALUES (@WagerAmount, @AmountReturned, @WagerType, @WagerSport, @WagerDate, @WagerResult, @UserId)", wagerToInsert);
     }
-
+    
     public void UpdateWager(WagerModel wagerToUpdate)
     {
         _connection.Execute("UPDATE wagerTracker SET WagerAmount = @WagerAmount, AmountReturned = @AmountReturned, WagerType = @WagerType, " +
             "WagerSport = @WagerSport, WagerDate = @WagerDate, WagerResult = @WagerResult, UserId = @UserId " +
             "WHERE WagerId = @WagerId", wagerToUpdate);
     }
-
+    
     public void DeleteWager(int WagerId)
     {
         _connection.Execute("DELETE FROM wagerTracker WHERE WagerId = @WagerId", new { WagerId });

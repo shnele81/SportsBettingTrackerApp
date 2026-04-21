@@ -46,4 +46,19 @@ public class WagerController : Controller
         return RedirectToAction("Index");
     }
 
+    [HttpGet]
+    public IActionResult DeleteWager(int WagerId)
+    {
+        var wager = _wagerRepository.GetWagerById(WagerId);
+        return View(wager);
+    }
+
+    [HttpPost]
+    [ActionName("DeleteWager")]
+    public IActionResult DeleteWagerConfirmed(int WagerId)
+    {
+        _wagerRepository.DeleteWager(WagerId);
+        return RedirectToAction("Index");
+    }
+
 }
