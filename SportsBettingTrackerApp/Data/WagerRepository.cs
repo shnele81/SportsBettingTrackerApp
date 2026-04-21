@@ -15,23 +15,25 @@ public class WagerRepository : IWagerRepository
 
     public void InsertWager(WagerModel wagerToInsert)
     {
-        _connection.Execute("INSERT INTO wagertracker (WagerAmount, AmountReturned, WagerType, WagerSport, WagerDate, WagerResult) " +
-                            "VALUES (@WagerAmount, @AmountReturned, @WagerType, @WagerSport, @WagerDate, @WagerResult)", wagerToInsert);
+        _connection.Execute("INSERT INTO wagerTracker (WagerAmount, AmountReturned, WagerType, WagerSport, WagerDate, WagerResult, UserId) " +
+                            "VALUES (@WagerAmount, @AmountReturned, @WagerType, @WagerSport, @WagerDate, @WagerResult, @UserId)", wagerToInsert);
     }
 
     public void UpdateWager(WagerModel wagerToUpdate)
     {
-        throw new NotImplementedException();
+        _connection.Execute("UPDATE wagerTracker SET WagerAmount = @WagerAmount, AmountReturned = @AmountReturned, WagerType = @WagerType, " +
+            "WagerSport = @WagerSport, WagerDate = @WagerDate, WagerResult = @WagerResult, UserId = @UserId " +
+            "WHERE WagerId = @WagerId", wagerToUpdate);
     }
 
     public void DeleteWager(int WagerId)
     {
-        throw new NotImplementedException();
+        _connection.Execute("DELETE FROM wagerTracker WHERE WagerId = @WagerId", new { WagerId });
     }
 
     public IEnumerable<WagerModel> GetWagersByFilter(string? sport, string? wagerType, DateTime? date)
     {
-        string sql = "SELECT * FROM Wagers WHERE 1=1";
+        string sql = "SELECT * FROM wagerTracker WHERE 1=1";
 
         if (sport != null) sql += " AND WagerSport = @sport";
         if (wagerType != null) sql += " AND WagerType = @wagerType";
