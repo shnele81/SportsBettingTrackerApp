@@ -1,18 +1,30 @@
 ﻿@model SportsBettingTrackerApp.Models.WagerModel
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Edit Your Wager";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+<div class="mb-3">
+    <form asp-action="UpdateWager" method="post">
+        <label asp-for="WagerSport"></label>
+        <input asp-for="WagerSport" class="form-control" />
+        
+        <label asp-for="WagerDate"></label>
+        <input asp-for="WagerDate" class="form-control" />
+        
+        <label asp-for="WagerType"></label>
+        <input asp-for="WagerType" class="form-control"/>
+        
+        <label asp-for="WagerAmount"></label>
+        <input asp-for="WagerAmount" class="form-control"/>
+        
+        <label asp-for="WagerResult"></label>
+        <input asp-for="WagerResult" class="form-control"/>
+        
+        <label asp-for="AmountReturned"></label>
+        <input asp-for="AmountReturned" class="form-control"/>
+        
+        <button type="submit" class="btn btn-primary">Save Wager</button>
+        <input type="hidden" asp-for="WagerId" />
+    </form>
 </div>
-</body>
-</html>
