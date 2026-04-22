@@ -16,6 +16,7 @@ builder.Services.AddScoped<IDbConnection>((s) =>
 
 builder.Services.AddTransient<IUserLoginInformationRepository, UserLoginInformationRepository>();
 builder.Services.AddTransient<IWagerRepository, WagerRepository>();
+builder.Services.AddAuthentication().AddCookie();
 
 var app = builder.Build();
 
@@ -29,6 +30,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

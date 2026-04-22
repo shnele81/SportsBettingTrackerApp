@@ -9,10 +9,10 @@
         <p class="lead mb-4">Take control of your sports betting. Track every wager, analyze your performance, and make smarter decisions.</p>
         @if (User.Identity?.IsAuthenticated == true)
         {
-            <a asp-controller="Wagers" asp-action="Create" class="btn btn-success btn-lg me-3">
+            <a asp-controller="Wager" asp-action="InsertWager" class="btn btn-success btn-lg me-3">
                 + Add New Wager
             </a>
-            <a asp-controller="Wagers" asp-action="Index" class="btn btn-outline-light btn-lg">
+            <a asp-controller="Wager" asp-action="Index" class="btn btn-outline-light btn-lg">
                 View My Wagers
             </a>
         }

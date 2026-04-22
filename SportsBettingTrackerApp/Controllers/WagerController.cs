@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using SportsBettingTrackerApp.Data;
 using SportsBettingTrackerApp.Models;
 
@@ -28,6 +29,8 @@ public class WagerController : Controller
     [HttpPost]
     public IActionResult InsertWager(WagerModel model)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        model.UserId = userId;
         _wagerRepository.InsertWager(model);
         return RedirectToAction("Index");
     }
@@ -42,6 +45,8 @@ public class WagerController : Controller
     [HttpPost]
     public IActionResult UpdateWager(WagerModel model)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        model.UserId = userId;
         _wagerRepository.UpdateWager(model);
         return RedirectToAction("Index");
     }

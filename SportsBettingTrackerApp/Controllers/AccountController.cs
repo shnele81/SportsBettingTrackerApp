@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using SportsBettingTrackerApp.Data;
 using SportsBettingTrackerApp.Models;
 
@@ -21,7 +24,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public IActionResult Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
         var user = _userRepository.GetUserByEmail(model.Email);
         if (user == null)
@@ -35,6 +38,14 @@ public class AccountController : Controller
             return View(model);
         }
         
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new Claim(ClaimTypes.Email, user.Email)
+        };
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         return RedirectToAction("Index", "Home");
     }
 
