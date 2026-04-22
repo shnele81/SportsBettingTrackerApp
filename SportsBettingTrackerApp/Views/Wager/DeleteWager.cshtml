@@ -1,18 +1,19 @@
 ﻿@model SportsBettingTrackerApp.Models.WagerModel
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Delete Wager";
 }
 
-<!DOCTYPE html>
+<p> Sport: @Model.WagerSport</p>
+<p> Date: @Model.WagerDate</p>
+<p> Type: @Model.WagerType</p>
+<p> Amount Bet: @Model.WagerAmount</p>
+<p> Result: @Model.WagerResult</p>
+<p> Profit/Loss: @Model.AmountReturned</p>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
-</div>
-</body>
-</html>
+<form asp-action="DeleteWager" method="post">
+    <button type="submit" class="btn btn-primary">Delete Wager</button>
+    <input type="hidden" asp-for="WagerId" />
+</form>
+
+<a asp-action="Index" class="btn btn-secondary">Cancel</a>
