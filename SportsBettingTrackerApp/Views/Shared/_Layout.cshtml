@@ -30,6 +30,7 @@
                 <div class="d-flex">
                     @if (User.Identity.IsAuthenticated)
                     {
+                        <a class="btn btn-primary me-2" asp-controller="Wager" asp-action="Index">Wager History</a>
                         <form asp-controller="Account" asp-action="Logout" method="post">
                             <button type="submit" class="btn btn-secondary">Logout</button>
                         </form>
