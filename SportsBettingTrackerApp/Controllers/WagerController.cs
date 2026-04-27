@@ -18,7 +18,7 @@ public class WagerController : Controller
 
     public IActionResult Index()
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var wagers = _wagerRepository.GetWagersByFilter(null, null, null, userId);
         return View(wagers);
     }
@@ -32,7 +32,7 @@ public class WagerController : Controller
     [HttpPost]
     public IActionResult InsertWager(WagerModel model)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         model.UserId = userId;
         _wagerRepository.InsertWager(model);
         return RedirectToAction("Index");
@@ -48,7 +48,7 @@ public class WagerController : Controller
     [HttpPost]
     public IActionResult UpdateWager(WagerModel model)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         model.UserId = userId;
         _wagerRepository.UpdateWager(model);
         return RedirectToAction("Index");

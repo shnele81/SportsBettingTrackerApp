@@ -28,7 +28,7 @@
                     </li>
                 </ul>
                 <div class="d-flex">
-                    @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity?.IsAuthenticated == true)
                     {
                         <a class="btn btn-primary me-2" asp-controller="Wager" asp-action="Index">Wager History</a>
                         <form asp-controller="Account" asp-action="Logout" method="post">
