@@ -4,36 +4,61 @@
     ViewData["Title"] = "All Bets";
 }
 
-<a asp-action="InsertWager" class="btn btn-primary">Add New Wager</a>
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Sports Wager Tracker</h1>
+        <p class="lead mb-4">Take control of your sports betting. Track every wager, analyze your performance, and make smarter decisions.</p>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="Wager" asp-action="InsertWager" class="btn btn-success btn-lg me-3">
+                + Add New Wager
+            </a>
+            <a asp-controller="Wager" asp-action="Index" class="btn btn-primary btn-lg">
+                View My Wagers
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="SignUp" class="btn btn-success btn-lg me-3">
+                Get Started Free
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">
+                Sign In
+            </a>
+        }
+    </div>
+</div>
 
-<table class="table">
-    <tr>
-        <th>Sport</th>
-        <th>Date of Wager</th>
-        <th>Type of Wager</th>
-        <th>Amount of Wager</th>
-        <th>Win or loss?</th>
-        <th>Amount of money won</th>
-        <th>Edit</th>
-        <th>Delete</th>
-    </tr>
 
-    @foreach (var wager in Model)
-    {
+<div class = "container">
+    <table class="table text-center">
         <tr>
-            <td>@wager.WagerSport</td>
-            <td>@wager.WagerDate.ToString("MM/dd/yyyy")</td>
-            <td>@wager.WagerType</td>
-            <td>@wager.WagerAmount</td>
-            <td>@wager.WagerResult</td>
-            <td>@wager.AmountReturned</td>
-            <td>
-                <a asp-action="UpdateWager" asp-route-WagerId="@wager.WagerId">Edit</a>
-            </td>
-            <td>
-                <a asp-action="DeleteWager" asp-route-WagerId="@wager.WagerId">Delete</a>
-            </td>
+            <th>Sport</th>
+            <th>Date of Wager</th>
+            <th>Type of Wager</th>
+            <th>Amount of Wager</th>
+            <th>Win or loss?</th>
+            <th>Amount of money won</th>
+            <th>Edit</th>
+            <th>Delete</th>
         </tr>
-    }
 
-</table>
+        @foreach (var wager in Model)
+        {
+            <tr>
+                <td>@wager.WagerSport</td>
+                <td>@wager.WagerDate.ToString("MM/dd/yyyy")</td>
+                <td>@wager.WagerType</td>
+                <td>@wager.WagerAmount</td>
+                <td>@wager.WagerResult</td>
+                <td>@wager.AmountReturned</td>
+                <td>
+                    <a asp-action="UpdateWager" asp-route-WagerId="@wager.WagerId">Edit</a>
+                </td>
+                <td>
+                    <a asp-action="DeleteWager" asp-route-WagerId="@wager.WagerId">Delete</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
