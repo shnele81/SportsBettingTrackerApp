@@ -63,4 +63,11 @@ public class AccountController : Controller
         _userRepository.InsertUser(user);
         return RedirectToAction("Login");
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync();
+        return RedirectToAction("Login");
+    }
 }

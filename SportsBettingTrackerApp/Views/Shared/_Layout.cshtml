@@ -28,8 +28,18 @@
                     </li>
                 </ul>
                 <div class="d-flex">
-                    <a class="btn btn-secondary me-2" asp-controller="Account" asp-action="Login">Login</a>
-                    <a class="btn btn-primary" asp-controller="Account" asp-action="SignUp">Sign Up</a>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit" class="btn btn-secondary">Logout</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="btn btn-secondary me-2" asp-controller="Account" asp-action="Login">Login</a>
+                        <a class="btn btn-primary" asp-controller="Account" asp-action="SignUp">Sign Up</a>
+                    }
+                    
                 </div>
 
             </div>

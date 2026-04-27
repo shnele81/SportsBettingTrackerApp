@@ -1,10 +1,12 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportsBettingTrackerApp.Data;
 using SportsBettingTrackerApp.Models;
 
 namespace SportsBettingTrackerApp.Controllers;
 
+[Authorize]
 public class WagerController : Controller
 {
     private readonly IWagerRepository _wagerRepository;
