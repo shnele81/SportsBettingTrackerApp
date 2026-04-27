@@ -16,7 +16,8 @@ public class WagerController : Controller
 
     public IActionResult Index()
     {
-        var wagers = _wagerRepository.GetWagersByFilter(null, null, null);
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var wagers = _wagerRepository.GetWagersByFilter(null, null, null, userId);
         return View(wagers);
     }
 

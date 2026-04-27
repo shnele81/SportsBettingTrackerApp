@@ -31,15 +31,15 @@ public class WagerRepository : IWagerRepository
         _connection.Execute("DELETE FROM wagerTracker WHERE WagerId = @WagerId", new { WagerId });
     }
 
-    public IEnumerable<WagerModel> GetWagersByFilter(string? sport, string? wagerType, DateTime? date)
+    public IEnumerable<WagerModel> GetWagersByFilter(string? sport, string? wagerType, DateTime? date, int userId)
     {
-        string sql = "SELECT * FROM wagerTracker WHERE 1=1";
+        string sql = "SELECT * FROM wagerTracker WHERE UserId = @userId";
 
         if (sport != null) sql += " AND WagerSport = @sport";
         if (wagerType != null) sql += " AND WagerType = @wagerType";
         if (date != null) sql += " AND WagerDate = @date";
 
-        return _connection.Query<WagerModel>(sql, new { sport, wagerType, date });
+        return _connection.Query<WagerModel>(sql, new { sport, wagerType, date, userId });
     }
 
     public WagerModel GetWagerById(int WagerId)
